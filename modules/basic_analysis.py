@@ -13,16 +13,35 @@ from . import preprocessing
 def analyze_handwriting(image_path: str) -> str:
     """Проводит базовый анализ изображения рукописного текста.
 
-    Загружает изображение, выполняет предобработку и
-    возвращает текстовый отчёт (заглушка).
+    Выполняет следующие операции:
+      * загружает изображение;
+      * выполняет предварительную обработку (перевод в ч/б, бинаризация);
+      * сегментирует на строки;
+      * вычисляет простейшие характеристики (число строк, среднюю высоту строки);
+    Результат возвращается в виде текстового отчёта.
 
     :param image_path: путь к файлу изображения
-    :return: текстовый отчёт о результатах
+    :return: текстовый отчёт о результатах анализа
     """
-    image = preprocessing.load_image(image_path)
+    try:
+        image = preprocessing.load_image(image_path)
+    except FileNotFoundError as exc:
+        return str(exc)
+
     processed = preprocessing.preprocess_image(image)
-    # Здесь предполагается вычисление признаков. Пока возвращаем путь.
-    return (
-        f"Обработано изображение: {image_path}. "
-        "Функция analyze_handwriting пока не реализована."
-    )
+    lines = preprocessing.segment_text(processed)
+    num_lines = len(lines)
+    if num_lines:
+        heights = [line.shape[0] for line in lines]
+        avg_height = sum(heights) / num_lines
+        report = (
+            f"Обработано изображение: {image_path}. Количество строк: {num_lines}. "
+            f"Средняя высота строки (в пикселях): {avg_height:.1f}. "
+            "Детальный анализ базовых признаков будет реализован на следующем этапе."
+        )
+    else:
+        report = (
+            f"Обработано изображение: {image_path}. Текст на изображении не обнаружен. "
+            "Пожалуйста, убедитесь, что файл содержит рукописный текст."
+        )
+    return report
