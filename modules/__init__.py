@@ -14,3 +14,5 @@ from . import left_hand  # noqa: F401
 from . import print_like  # noqa: F401
 from . import imitation  # noqa: F401
 from . import personality_diagnosis  # noqa: F401
+from . import comparative  # noqa: F401
+from . import general_features  # noqa: F401

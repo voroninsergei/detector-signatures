@@ -2,3 +2,5 @@ Flask
 opencv-python
 numpy
 python-docx
+pytest
+python-docx
